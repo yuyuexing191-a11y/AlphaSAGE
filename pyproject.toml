@@ -1,12 +1,11 @@
 [project]
 name = "AlphaSAGE"
 version = "0.1.0"
-description = "Default template for PDM package"
+description = "Official implementation of AlphaSAGE"
 dependencies = [
     "numpy>=2.3.2",
-    "torch @ https://download.pytorch.org/whl/cu121/torch-2.4.0%2Bcu121-cp311-cp311-linux_x86_64.whl",
-    "torchvision @ https://download.pytorch.org/whl/cu121/torchvision-0.19.0%2Bcu121-cp311-cp311-linux_x86_64.whl",
-    "torchaudio @ https://download.pytorch.org/whl/cu121/torchaudio-2.4.0%2Bcu121-cp311-cp311-linux_x86_64.whl",
+    "torch @ https://download.pytorch.org/whl/nightly/cu128/torch-2.12.0.dev20260408%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl",
+    "triton @ https://download.pytorch.org/whl/nightly/triton-3.7.0%2Bgit282c8251-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
     "jinja2>=3.1.6",
     "gymnasium>=1.2.0",
     "stable-baselines3>=2.7.0",
@@ -23,11 +22,10 @@ dependencies = [
     "torch-geometric>=2.6.1",
     "xgboost>=3.0.5",
     "yahooquery>=2.4.1",
-    "pip>=26.1.2",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [build-system]
 requires = ["pdm-backend"]

@@ -56,17 +56,23 @@ The backtest results of AlphaSAGE is shown in the following figure:
 
 
 ## 🛠 Installation
-We use PDM to manage the dependencies. To install PDM, please refer to the [official documentation](https://pdm-project.org/en/latest/).
+We use `uv` with Python 3.11. The pinned PyTorch dependency targets CUDA 12.8 nightly so RTX 50-series GPUs (including RTX 5080) can run the project.
 
 ```bash
 git clone https://github.com/BerkinChen/AlphaSAGE.git
 cd AlphaSAGE
-pdm install
+uv python install 3.11
+uv sync
 ```
 
 ## 📁 Data Preparation
 
-We use the data from [Qlib](https://github.com/microsoft/qlib) to train the model. Please refer to the [official documentation](https://qlib.readthedocs.io/en/latest/?badge=latest) to download the data.
+We use the data from [Qlib](https://github.com/microsoft/qlib) to train the model. Set the local Chinese market dataset path before running experiments:
+
+```bash
+export CN_QLIB_PATH=/home/xyy/.qlib/qlib_data/cn_data
+export PYTHONPATH=$PWD/src:$PWD
+```
 
 
 ## 🚀 Quick Start
@@ -107,7 +113,7 @@ python train_gfn.py \
 Following [AlphaForge](https://github.com/DulyHao/AlphaForge), we use adaptive combination to create the final alpha portfolio:
 
 ```bash
-python run_adaptive_combination.py \
+uv run python run_adaptive_combination.py \
     --expressions_file results_dir\
     --instruments csi300 \
     --threshold_ric 0.015 \
@@ -130,13 +136,13 @@ For comparison with [AlphaGen](https://github.com/RL-MLDM/alphagen) and [AlphaQC
 
 ```bash
 # Train AlphaQCM
-python train_qcm.py \
+uv run python train_qcm.py \
     --instruments csi300 \
     --pool 20 \
     --seed 0
 
 # Evaluate AlphaQCM results
-python run_adaptive_combination.py \
+uv run python run_adaptive_combination.py \
     --expressions_file results_dir \
     --instruments csi300 \
     --cuda 2 \
@@ -148,13 +154,13 @@ python run_adaptive_combination.py \
 #### AlphaGen (PPO):
 ```bash
 # Train AlphaGen with PPO
-python train_ppo.py \
+uv run python train_ppo.py \
     --instruments csi300 \
     --pool 20 \
     --seed 0
 
 # Evaluate AlphaGen results  
-python run_adaptive_combination.py \
+uv run python run_adaptive_combination.py \
     --expressions_file results_dir \
     --instruments csi300 \
     --cuda 2 \
