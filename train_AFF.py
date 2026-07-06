@@ -21,6 +21,7 @@ import gc
 from gan.utils.data import get_data_by_year
 import argparse
 from datetime import datetime
+from qlib_paths import get_qlib_path
 
 
 def pre_process_y(y):
@@ -153,10 +154,7 @@ def get_metric(zoo_blds,device,corr_thresh=0.5,metric_target='ic'):
 def run(args):
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.cuda)
     reseed_everything(args.seed)
-    if args.instruments == 'sp500':
-        QLIB_PATH = '/your_path/data/qlib_data/us_data_qlib'
-    else:
-        QLIB_PATH = '/your_path/data/qlib_data/cn_data_rolling'
+    QLIB_PATH = get_qlib_path(args.instruments)
     close = Feature(FeatureType.CLOSE)
     target = Ref(close, -20) / close - 1
     

@@ -13,6 +13,7 @@ import numpy as np
 
 from alphagen.utils.correlation import batch_pearsonr, batch_spearmanr, batch_ret, batch_sharpe_ratio, batch_max_drawdown
 from gan.utils.builder import exprs2tensor
+from qlib_paths import get_qlib_path
 
 
 def remove_linearly_dependent_rows(x, y, to_pred, tol=1e-10):
@@ -289,10 +290,7 @@ def run(args):
         window = float('inf')
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
-    if args.instruments == 'sp500':
-        QLIB_PATH = '/your_path/data/qlib_data/us_data_qlib'
-    else:
-        QLIB_PATH = '/your_path/data/qlib_data/cn_data_rolling'
+    QLIB_PATH = get_qlib_path(args.instruments)
     # 1. Define Target and Load Data
     close = Feature(FeatureType.CLOSE)
     target = Ref(close, -args.label_days) / close - 1

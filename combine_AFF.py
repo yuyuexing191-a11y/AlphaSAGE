@@ -10,8 +10,7 @@ from typing import Union
 from gan.utils.data import get_data_by_year
 import argparse
 from datetime import datetime
-
-QLIB_PATH = '/your_path/data/qlib_data/cn_data_rolling'
+from qlib_paths import get_qlib_path
 
 def load_alpha_pool(raw) -> Tuple[List[Expression], List[float]]:
     exprs_raw = raw['exprs']
@@ -110,6 +109,7 @@ def run(args):
         window = float('inf')
 
     os.environ["CUDA_VISIBLE_DEVICES"]=str(args.cuda)
+    QLIB_PATH = get_qlib_path(args.instruments)
 
     close = Feature(FeatureType.CLOSE)
     target = Ref(close, -20) / close - 1

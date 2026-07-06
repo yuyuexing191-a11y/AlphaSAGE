@@ -21,6 +21,7 @@ from src.alphagen.data.expression import *
 from src.alphagen_qlib.stock_data import StockData
 from src.alphagen.utils.correlation import batch_pearsonr
 from src.alpha_gfn.gflownet import EntropyTBGFlowNet
+from qlib_paths import get_qlib_path
 
 from gfn.samplers import Sampler
 from gfn.gflownet.trajectory_balance import TBGFlowNet
@@ -144,14 +145,11 @@ def train(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
 
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    if args.instrument == 'sp500':
-        QLIB_PATH = '/your_path/data/qlib_data/us_data_qlib'
-    else:    
-        QLIB_PATH = '/your_path/data/qlib_data/cn_data_rolling'
+    device = torch.device(args.device)
+    QLIB_PATH = get_qlib_path(args.instrument)
     # Initialize StockData and target expression
-    data = StockData(instrument=args.instrument, start_time='2010-01-01', end_time='2016-12-31', qlib_path=QLIB_PATH)
-    data_test = StockData(instrument=args.instrument, start_time='2018-01-01', end_time='2020-12-31', qlib_path=QLIB_PATH)
+    data = StockData(instrument=args.instrument, start_time='2010-01-01', end_time='2016-12-31', qlib_path=QLIB_PATH, device=device)
+    data_test = StockData(instrument=args.instrument, start_time='2018-01-01', end_time='2020-12-31', qlib_path=QLIB_PATH, device=device)
     close = Feature(FeatureType.CLOSE)
     target = Ref(close, -20) / close - 1
     
@@ -284,6 +282,7 @@ if __name__ == '__main__':
     parser.add_argument('--nov_weight', type=float, default=0.5, help='Initial weight for novelty reward (will decay during training)')
     parser.add_argument('--weight_decay_type', type=str, default='linear', choices=['linear', 'exponential', 'polynomial'], help='Type of weight decay to apply')
     parser.add_argument('--final_weight_ratio', type=float, default=0.0, help='Final weight as ratio of initial weight (e.g., 0.1 means decay to 10% of initial)')
+    parser.add_argument('--device', type=str, default='cuda:0' if torch.cuda.is_available() else 'cpu', help='Torch device to run on, e.g. cuda:0 or cpu')
     args = parser.parse_args()
     print(args)
     train(args)

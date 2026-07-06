@@ -9,13 +9,11 @@ from alphagen.data.expression import Feature, FeatureType, Ref, StockData
 from alphagen_qlib.calculator import QLibStockDataCalculator
 from alphagen.models.alpha_pool import AlphaPool
 from alphagen.rl.env.wrapper import AlphaEnv
+from qlib_paths import get_qlib_path
 
 
 def run(args):
-    if args.instruments == 'sp500':
-        QLIB_PATH = '/your_path/data/qlib_data/us_data_qlib'
-    else:
-        QLIB_PATH = '/your_path/data/qlib_data/cn_data_rolling'
+    QLIB_PATH = get_qlib_path(args.instruments)
     # torch.cuda.set_device(args.cuda)
     config_path = os.path.join('config/qcm_config', f'{args.model}.yaml')
 
