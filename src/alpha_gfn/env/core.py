@@ -20,12 +20,14 @@ class GFNEnvCore(DiscreteEnv):
                  device: torch.device = torch.device('cuda:0'), 
                  mask_dropout_prob: float = 0.1,
                  ssl_weight: float = 0.1,
-                 nov_weight: float = 0.1):
+                 nov_weight: float = 0.1,
+                 enable_structure_mask: bool = False):
         self.pool = pool
         self.encoder = encoder
         self.mask_dropout_prob = mask_dropout_prob
         self.ssl_weight = ssl_weight
         self.nov_weight = nov_weight
+        self.enable_structure_mask = enable_structure_mask
         self.builder = ExpressionBuilder()
         
         self.beg_token = [BEG_TOKEN]
@@ -83,6 +85,35 @@ class GFNEnvCore(DiscreteEnv):
         # Implement backward step if needed
         raise NotImplementedError
 
+
+    def _apply_structure_aware_action_mask(self, valid_actions: List[bool], state_tensor: torch.Tensor) -> None:
+        """Block risky operator expansions once a partial expression is already complex."""
+        token_ids = [tid.item() for tid in state_tensor if tid >= 0]
+        tokens = [self.id_to_token_map[token_id] for token_id in token_ids[1:]]
+
+        risky_operator_names = {"Div", "Inv", "Log", "Pow"}
+        comparison_operator_names = {"Greater", "Less"}
+        risky_count = 0
+        comparison_count = 0
+
+        for token in tokens:
+            if isinstance(token, OperatorToken):
+                op_name = token.operator.__name__
+                if op_name in risky_operator_names:
+                    risky_count += 1
+                if op_name in comparison_operator_names:
+                    comparison_count += 1
+
+        # Keep this conservative: only intervene after the prefix is clearly risky.
+        should_block_more_risky_ops = risky_count >= 3 or comparison_count >= 4 or len(token_ids) >= MAX_EXPR_LENGTH - 2
+        if not should_block_more_risky_ops:
+            return
+
+        for i, op_token in enumerate(self.operators):
+            if op_token.operator.__name__ in risky_operator_names:
+                action_idx = len(self.beg_token) + i
+                valid_actions[action_idx] = False
+
     def update_masks(self, states: DiscreteStates):
         batch_masks = []
         for state_tensor in states.tensor:
@@ -111,6 +142,9 @@ class GFNEnvCore(DiscreteEnv):
                 valid_actions[beg_offset + n_ops + n_features + i] = builder.validate(dt_token)
             for i, const_token in enumerate(self.constants):
                 valid_actions[beg_offset + n_ops + n_features + n_dts + i] = builder.validate(const_token)
+
+            if self.enable_structure_mask:
+                self._apply_structure_aware_action_mask(valid_actions, state_tensor)
 
             if len(token_ids) < MAX_EXPR_LENGTH:
                 if builder.is_valid():
