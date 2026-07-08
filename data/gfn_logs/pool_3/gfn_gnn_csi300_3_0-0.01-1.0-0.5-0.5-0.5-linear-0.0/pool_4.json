@@ -1,9 +1,0 @@
-{
-    "exprs": [
-        "Mul(Log(TsMed(Pow(Less($low,1.0),Less(TsKurt($low,50),Sub(Inv(Sub($open,0.01)),$volume))),40)),5.0)"
-    ],
-    "weights": [
-        0.0
-    ],
-    "record_reward": []
-}
