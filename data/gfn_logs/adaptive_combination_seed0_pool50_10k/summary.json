@@ -1,0 +1,72 @@
+[
+  {
+    "mode": "baseline",
+    "seed": 0,
+    "expressions_file": "data/gfn_logs/pool_50/gfn_gnn_csi300_50_0-0.01-1.0-0.5-0.5-0.5-linear-0.0-structmask0/pool_9999.json",
+    "returncode": 0,
+    "log": "data/gfn_logs/adaptive_combination_seed0_pool50_10k/baseline.log",
+    "metrics": {
+      "validation": {
+        "ic": -0.0038,
+        "ic_std": 0.1059,
+        "icir": -0.0363,
+        "ric": 0.0082,
+        "ric_std": 0.0989,
+        "ricir": 0.0828,
+        "ret": -0.0164,
+        "ret_std": 0.0016,
+        "retir": -0.1251,
+        "ret_sharpe": -1.9857,
+        "ret_mdd": 0.074
+      },
+      "test": {
+        "ic": 0.036,
+        "ic_std": 0.1287,
+        "icir": 0.2799,
+        "ric": 0.0398,
+        "ric_std": 0.1306,
+        "ricir": 0.3048,
+        "ret": 0.0029,
+        "ret_std": 0.0031,
+        "retir": 0.0038,
+        "ret_sharpe": 0.0603,
+        "ret_mdd": 0.2597
+      }
+    }
+  },
+  {
+    "mode": "mask",
+    "seed": 0,
+    "expressions_file": "data/gfn_logs/pool_50/gfn_gnn_csi300_50_0-0.01-1.0-0.5-0.5-0.5-linear-0.0-structmask1/pool_9999.json",
+    "returncode": 0,
+    "log": "data/gfn_logs/adaptive_combination_seed0_pool50_10k/mask.log",
+    "metrics": {
+      "validation": {
+        "ic": -0.0056,
+        "ic_std": 0.1391,
+        "icir": -0.04,
+        "ric": 0.0137,
+        "ric_std": 0.1409,
+        "ricir": 0.0972,
+        "ret": -0.0126,
+        "ret_std": 0.002,
+        "retir": -0.0794,
+        "ret_sharpe": -1.2601,
+        "ret_mdd": 0.0821
+      },
+      "test": {
+        "ic": 0.0377,
+        "ic_std": 0.1327,
+        "icir": 0.2838,
+        "ric": 0.0453,
+        "ric_std": 0.1396,
+        "ricir": 0.3249,
+        "ret": 0.0021,
+        "ret_std": 0.0029,
+        "retir": 0.003,
+        "ret_sharpe": 0.0474,
+        "ret_mdd": 0.2713
+      }
+    }
+  }
+]

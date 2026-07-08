@@ -1,0 +1,99 @@
+{
+    "exprs": [
+        "Mul(Greater(Sub(Add($close,$volume),Less(-0.5,$volume)),-1.0),TsEMA(Rank(Sub(SLog1p($close),-0.5)),30))",
+        "Div(Add($low,Less(TsMed(Pow(30.0,$low),10),TsVar($volume,30))),-5.0)",
+        "Less(Div(Less(-5.0,$vwap),TsVar(Inv(TsWMA($low,20)),30)),$high)",
+        "Ref(Rank(Less(Sign(Sub(1.0,Inv(TsMad(Div($high,-1.0),30)))),Pow($high,-2.0))),50)",
+        "Pow(0.5,Less($open,Rank($close)))",
+        "TsKurt($low,10)",
+        "TsPctChange(Div(-10.0,$open),50)",
+        "TsSkew(Add(5.0,$close),30)",
+        "TsCov(Mul(0.5,TsEMA($close,30)),Sub(-30.0,$close),40)",
+        "Greater(SLog1p(Sign(Mul($open,-5.0))),SLog1p(TsCov(Less($volume,$volume),$low,50)))"
+    ],
+    "weights": [
+        0.023205017670989037,
+        0.007194141391664743,
+        0.007415059953927994,
+        0.007592769339680672,
+        0.01572265848517418,
+        0.01352854073047638,
+        0.012134047225117683,
+        0.025246111676096916,
+        0.013733510859310627,
+        0.03651890158653259
+    ],
+    "record_reward": [],
+    "reward_vectors": [
+        {
+            "predictive": 0.023205017670989037,
+            "stability": 0.045455831289291385,
+            "diversity": 0.703201025724411,
+            "simplicity": 0.33287108369807955,
+            "semantic": 0.5243532159297554
+        },
+        {
+            "predictive": 0.007194141391664743,
+            "stability": 0.06328781843185424,
+            "diversity": 0.7634750604629517,
+            "simplicity": 0.42741493194872665,
+            "semantic": 0.5663695977153527
+        },
+        {
+            "predictive": 0.007415059953927994,
+            "stability": 0.058116137981414795,
+            "diversity": 0.75665083527565,
+            "simplicity": 0.44932896411722156,
+            "semantic": 0.5392238954569043
+        },
+        {
+            "predictive": 0.007592769339680672,
+            "stability": 0.06511135101318359,
+            "diversity": 0.8920855149626732,
+            "simplicity": 0.3412977553009937,
+            "semantic": 0.45334840522111913
+        },
+        {
+            "predictive": 0.01572265848517418,
+            "stability": 0.07785720825195312,
+            "diversity": 0.8383440226316452,
+            "simplicity": 0.6872892787909722,
+            "semantic": 0.31758438831166197
+        },
+        {
+            "predictive": 0.01352854073047638,
+            "stability": 0.02117794454097748,
+            "diversity": 0.957667164504528,
+            "simplicity": 0.8187307530779818,
+            "semantic": 0.46677757861156266
+        },
+        {
+            "predictive": 0.012134047225117683,
+            "stability": 0.05299291610717773,
+            "diversity": 0.8348766416311264,
+            "simplicity": 0.7225273536420722,
+            "semantic": 0.44757443387906726
+        },
+        {
+            "predictive": 0.025246111676096916,
+            "stability": 0.045082786679267885,
+            "diversity": 0.8487532734870911,
+            "simplicity": 0.7225273536420722,
+            "semantic": 0.5260826498983178
+        },
+        {
+            "predictive": 0.013733510859310627,
+            "stability": 0.06415569186210632,
+            "diversity": 0.7462529838085175,
+            "simplicity": 0.522045776761016,
+            "semantic": 0.519810086857022
+        },
+        {
+            "predictive": 0.03651890158653259,
+            "stability": 0.0615561842918396,
+            "diversity": 0.8551541715860367,
+            "simplicity": 0.42741493194872665,
+            "semantic": 0.5515880675477918
+        }
+    ]
+}

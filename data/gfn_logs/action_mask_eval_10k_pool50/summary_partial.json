@@ -1,0 +1,68 @@
+[
+  {
+    "seed": 0,
+    "mode": "baseline",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": 0,
+    "best_ic": 0.032,
+    "best_test_ic_of_best_train_ic": -0.003,
+    "best_expr": "Inv(Pow(30.0,TsCorr($volume,$open,30)))",
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed0_baseline.log"
+  },
+  {
+    "seed": 0,
+    "mode": "mask",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": 0,
+    "best_ic": 0.0468,
+    "best_test_ic_of_best_train_ic": -0.0009,
+    "best_expr": "Pow(TsCorr($volume,$open,30),1.0)",
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed0_mask.log"
+  },
+  {
+    "seed": 1,
+    "mode": "baseline",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": 0,
+    "best_ic": 0.0299,
+    "best_test_ic_of_best_train_ic": -0.0376,
+    "best_expr": "TsSkew($open,50)",
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed1_baseline.log"
+  },
+  {
+    "seed": 1,
+    "mode": "mask",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": 0,
+    "best_ic": 0.0286,
+    "best_test_ic_of_best_train_ic": -0.0127,
+    "best_expr": "TsIr(Div(Sub(-10.0,$volume),$open),50)",
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed1_mask.log"
+  },
+  {
+    "seed": 2,
+    "mode": "baseline",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": 0,
+    "best_ic": 0.0364,
+    "best_test_ic_of_best_train_ic": 0.0222,
+    "best_expr": "Add(-2.0,Sub(TsIr($volume,40),-0.5))",
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed2_baseline.log"
+  },
+  {
+    "seed": 2,
+    "mode": "mask",
+    "episodes": 10000,
+    "pool_capacity": 50,
+    "returncode": -9,
+    "best_ic": null,
+    "best_test_ic_of_best_train_ic": null,
+    "best_expr": null,
+    "log": "data/gfn_logs/action_mask_eval_10k_pool50/seed2_mask.log"
+  }
+]
