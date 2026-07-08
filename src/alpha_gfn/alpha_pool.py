@@ -6,6 +6,8 @@ from torch import Tensor
 from alphagen.models.alpha_pool import AlphaPool, AlphaPoolBase
 from alphagen.data.expression import Expression
 from alphagen_qlib.stock_data import StockData
+from alphagen.utils.correlation import batch_pearsonr
+from qd_pool import qd_bucket_key
 
 
 class AlphaPoolGFN(AlphaPool):
@@ -16,12 +18,18 @@ class AlphaPoolGFN(AlphaPool):
         target: Expression,
         ic_mut_threshold: float = 0.3,
         ssl_k: int = 3,
-        ssl_tau: float = 0.1
+        ssl_tau: float = 0.1,
+        enable_qd_pool: bool = False,
+        qd_per_bucket_capacity: int = 2
     ):
         super().__init__(capacity, stock_data, target)
         self.ic_mut_threshold = ic_mut_threshold
         self.ssl_k = ssl_k  # K for k-nearest neighbors
         self.ssl_tau = ssl_tau  # Temperature parameter for similarity weight
+        self.enable_qd_pool = enable_qd_pool
+        self.qd_per_bucket_capacity = qd_per_bucket_capacity
+        self.qd_bucket_keys: List[Optional[Tuple[str, str, str]]] = [None for _ in range(capacity + 1)]
+        self.qd_archive: dict[Tuple[str, str, str], List[int]] = {}
         # Initialize embeddings storage with the same structure as other factor properties
         self.embeddings: List[Optional[Tensor]] = [None for _ in range(capacity + 1)]
 
@@ -32,6 +40,10 @@ class AlphaPoolGFN(AlphaPool):
             return 0.0, 1.0
         ic_ret = np.abs(ic_ret)
         ic_mut = np.abs(ic_mut)
+
+        if self.enable_qd_pool:
+            self._try_add_qd_factor(expr, value, ic_ret, ic_mut, embedding)
+            return ic_ret, (1 - np.max(ic_mut)) if ic_mut.size > 0 else 1.0
         
         # Check if we should add this factor to the pool
         if self.size < self.capacity:
@@ -56,20 +68,94 @@ class AlphaPoolGFN(AlphaPool):
         
         return ic_ret, (1 - np.max(ic_mut)) if ic_mut.size > 0 else 1.0
     
+
+    def _try_add_qd_factor(
+        self,
+        expr: Expression,
+        value: Tensor,
+        ic_ret: float,
+        ic_mut: np.ndarray,
+        embedding: Optional[Tensor] = None
+    ) -> None:
+        if ic_mut.size > 0 and np.max(ic_mut) > self.ic_mut_threshold:
+            print(f"[Pool Reject] {expr}")
+            return
+
+        bucket_key = qd_bucket_key(str(expr))
+        bucket_indices = [
+            idx for idx in self.qd_archive.get(bucket_key, [])
+            if idx < self.size and self.qd_bucket_keys[idx] == bucket_key
+        ]
+        self.qd_archive[bucket_key] = bucket_indices
+
+        if self.size < self.capacity and len(bucket_indices) < self.qd_per_bucket_capacity:
+            self._add_factor(expr, value, ic_ret, ic_mut, embedding, bucket_key)
+            print(f"[QD Pool Add] bucket={bucket_key} expr={expr}")
+            return
+
+        replace_idx = None
+        if bucket_indices:
+            worst_bucket_idx = min(bucket_indices, key=lambda idx: self.single_ics[idx])
+            if ic_ret > self.single_ics[worst_bucket_idx]:
+                replace_idx = worst_bucket_idx
+        elif self.size >= self.capacity:
+            global_worst_idx = int(np.argmin(self.single_ics[:self.size]))
+            if ic_ret > self.single_ics[global_worst_idx]:
+                replace_idx = global_worst_idx
+
+        if replace_idx is None:
+            print(f"[QD Pool Reject] bucket={bucket_key} expr={expr}")
+            return
+
+        print(f"[QD Pool Replace] bucket={bucket_key} old={self.exprs[replace_idx]} new={expr}")
+        self._replace_factor(replace_idx, expr, value, ic_ret, ic_mut, embedding, bucket_key)
+
     def _add_factor(
         self,
         expr: Expression,
         value: Tensor,
         ic_ret: float,
         ic_mut: List[float],
-        embedding: Optional[Tensor] = None
+        embedding: Optional[Tensor] = None,
+        bucket_key: Optional[Tuple[str, str, str]] = None
     ):
         # Call parent method to handle standard factor storage
         super()._add_factor(expr, value, ic_ret, ic_mut)
         # Store the embedding for the newly added factor
         n = self.size - 1  # size was incremented in parent method
         self.embeddings[n] = embedding
+        self.qd_bucket_keys[n] = bucket_key
+        if self.enable_qd_pool and bucket_key is not None:
+            self.qd_archive.setdefault(bucket_key, []).append(n)
     
+
+    def _replace_factor(
+        self,
+        idx: int,
+        expr: Expression,
+        value: Tensor,
+        ic_ret: float,
+        ic_mut: List[float],
+        embedding: Optional[Tensor],
+        bucket_key: Tuple[str, str, str]
+    ) -> None:
+        old_bucket = self.qd_bucket_keys[idx]
+        if old_bucket is not None and old_bucket in self.qd_archive:
+            self.qd_archive[old_bucket] = [i for i in self.qd_archive[old_bucket] if i != idx]
+
+        self.exprs[idx] = expr
+        self.values[idx] = value
+        self.single_ics[idx] = ic_ret
+        for i in range(self.size):
+            if i == idx:
+                self.mutual_ics[idx][idx] = 1.0
+            else:
+                mutual_ic = batch_pearsonr(value, self.values[i]).mean().item()  # type: ignore
+                self.mutual_ics[i][idx] = self.mutual_ics[idx][i] = mutual_ic
+        self.weights[idx] = ic_ret
+        self.embeddings[idx] = embedding
+        self.qd_bucket_keys[idx] = bucket_key
+        self.qd_archive.setdefault(bucket_key, []).append(idx)
 
     def _pop(self) -> None:
         # Pop the factor with the lowest ic
@@ -86,7 +172,24 @@ class AlphaPoolGFN(AlphaPool):
         super()._swap_idx(i, j)
         # Swap embeddings
         self.embeddings[i], self.embeddings[j] = self.embeddings[j], self.embeddings[i]
+        self.qd_bucket_keys[i], self.qd_bucket_keys[j] = self.qd_bucket_keys[j], self.qd_bucket_keys[i]
+        if self.enable_qd_pool:
+            self._rebuild_qd_archive()
     
+    def _rebuild_qd_archive(self) -> None:
+        self.qd_archive = {}
+        for idx in range(self.size):
+            bucket_key = self.qd_bucket_keys[idx]
+            if bucket_key is not None:
+                self.qd_archive.setdefault(bucket_key, []).append(idx)
+
+    def to_dict(self) -> dict:
+        result = super().to_dict()
+        if self.enable_qd_pool:
+            result["qd_bucket_keys"] = [list(key) if key is not None else None for key in self.qd_bucket_keys[:self.size]]
+            result["qd_bucket_counts"] = {str(key): len(indices) for key, indices in self.qd_archive.items()}
+        return result
+
     def _find_k_nearest_neighbors(self, query_embedding: Tensor, k: int, exclude_self: bool = True, distance_threshold: float = 1e-6) -> List[int]:
         """
         Find k nearest neighbors based on embedding similarity

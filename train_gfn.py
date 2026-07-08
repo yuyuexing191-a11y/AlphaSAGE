@@ -154,7 +154,13 @@ def train(args):
     target = Ref(close, -20) / close - 1
     
     # Initialize AlphaPoolGFN
-    pool = AlphaPoolGFN(capacity=args.pool_capacity, stock_data=data, target=target)
+    pool = AlphaPoolGFN(
+        capacity=args.pool_capacity,
+        stock_data=data,
+        target=target,
+        enable_qd_pool=args.enable_qd_pool,
+        qd_per_bucket_capacity=args.qd_per_bucket_capacity,
+    )
 
     # Initialize model
     n_tokens = len(FEATURES) + len(OPERATORS) + len(DELTA_TIMES) + len(CONSTANTS)
@@ -200,7 +206,7 @@ def train(args):
     log_dir = os.path.join(
         'data/gfn_mymethod',
         f'pool_{args.pool_capacity}',
-        f'gfn_{args.encoder_type}_{args.instrument}_{args.pool_capacity}_{args.seed}-{args.entropy_coef}-{args.entropy_temperature}-{args.mask_dropout_prob}-{args.ssl_weight}-{args.nov_weight}-{args.weight_decay_type}-{args.final_weight_ratio}-structmask{int(args.enable_structure_mask)}'
+        f'gfn_{args.encoder_type}_{args.instrument}_{args.pool_capacity}_{args.seed}-{args.entropy_coef}-{args.entropy_temperature}-{args.mask_dropout_prob}-{args.ssl_weight}-{args.nov_weight}-{args.weight_decay_type}-{args.final_weight_ratio}-structmask{int(args.enable_structure_mask)}-qd{int(args.enable_qd_pool)}'
     )
     os.makedirs(log_dir, exist_ok=True)
     logger = GFNLogger(pf, pool, log_dir, data_test, target)
@@ -275,11 +281,13 @@ if __name__ == '__main__':
     parser.add_argument('--log_freq', type=int, default=1000)
     parser.add_argument('--update_freq', type=int, default=128)
     parser.add_argument('--n_episodes', type=int, default=1_000)
-    parser.add_argument('--encoder_type', type=str, default='lstm', choices=['transformer', 'lstm', 'gnn'])
+    parser.add_argument('--encoder_type', type=str, default='gnn', choices=['transformer', 'lstm', 'gnn'])
     parser.add_argument('--entropy_coef', type=float, default=0.01, help='Coefficient for entropy regularization')
     parser.add_argument('--entropy_temperature', type=float, default=1.0, help='Temperature for entropy calculation')
     parser.add_argument('--mask_dropout_prob', type=float, default=0.5, help='Probability of masking out valid actions based on expression length')
     parser.add_argument('--enable_structure_mask', action='store_true', help='Enable conservative structure-aware action masking for risky operator prefixes')
+    parser.add_argument('--enable_qd_pool', action='store_true', help='Enable Quality-Diversity bucketed alpha pool admission')
+    parser.add_argument('--qd_per_bucket_capacity', type=int, default=2, help='Maximum number of elite factors retained per QD bucket')
     parser.add_argument('--ssl_weight', type=float, default=0.5, help='Initial weight for SSL reward (will decay during training)')
     parser.add_argument('--nov_weight', type=float, default=0.5, help='Initial weight for novelty reward (will decay during training)')
     parser.add_argument('--weight_decay_type', type=str, default='linear', choices=['linear', 'exponential', 'polynomial'], help='Type of weight decay to apply')

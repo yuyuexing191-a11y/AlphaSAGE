@@ -121,7 +121,7 @@ uv run python run_adaptive_combination.py \
     --chunk_size 400 \
     --window inf \
     --n_factors 20 \
-    --cuda 2 \
+    --cuda 0 \
     --train_end_year 2020 \
     --seed 0 \
 ```

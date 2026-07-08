@@ -1,0 +1,396 @@
+{
+    "exprs": [
+        "Sub(Add(Greater(5.0,SLog1p($close)),TsIr($close,50)),-1.0)",
+        "$low",
+        "Pow(30.0,Div($low,-0.01))",
+        "TsDiv(Sub(2.0,SLog1p(Sub(Sign($volume),0.5))),20)",
+        "Add(1.0,TsIr(TsMax(TsMax($volume,30),20),30))",
+        "Div($low,TsKurt(SLog1p(Sign(Add(Mul(TsSum($low,40),-0.5),-0.5))),20))",
+        "TsPctChange(Pow(-2.0,$volume),30)",
+        "TsMax(Rank(Sign(Add(2.0,Sign($close)))),50)",
+        "TsSkew(Add(Greater(Div(30.0,$open),30.0),$low),20)",
+        "Mul(Abs(Inv(TsIr(Mul(0.5,Log($close)),20))),2.0)",
+        "TsDiv($open,10)",
+        "Sub(1.0,SLog1p(Div(Less(Greater($low,-5.0),$close),Less(Div($close,-1.0),$close))))",
+        "Pow(Pow(TsRank($low,30),-30.0),Pow(-0.01,Pow($close,Mul(-10.0,TsDelta($open,20)))))",
+        "Add(Greater(-0.5,Less($vwap,$high)),Sub(Greater(TsMinMaxDiff(Rank(Inv(Pow($volume,-5.0))),30),-10.0),$vwap))",
+        "Div(-0.5,Add(Mul($low,Less($high,30.0)),Add(-30.0,TsMax($vwap,10))))",
+        "Mul(Less(2.0,Add($vwap,30.0)),Rank(Div(TsSkew(Greater($open,Sign(Sign(Pow(-30.0,$high)))),50),30.0)))",
+        "Mul(Mul(Div(Add(10.0,$volume),TsDelta($close,10)),5.0),-10.0)",
+        "Sub(Pow(2.0,$vwap),Less($volume,1.0))",
+        "Div(30.0,TsCorr($high,Mul(-1.0,$open),20))",
+        "Div(Pow(30.0,$high),Sub(-1.0,Pow(Div(Ref(Sub(Div($vwap,0.01),-30.0),40),-5.0),10.0)))",
+        "Div(-0.01,TsWMA(TsDiv($volume,30),40))",
+        "Pow($high,Sub(-2.0,Pow(Sign($volume),$low)))",
+        "Pow(-5.0,Abs(TsMin(TsMin($high,30),50)))",
+        "Sign(Add(10.0,TsRank($close,10)))",
+        "TsMad(Rank(Pow(Inv($low),1.0)),10)",
+        "TsVar(Pow(2.0,$low),20)",
+        "Add(10.0,Pow(Inv(TsMaxDiff(Ref(SLog1p(Sign($volume)),30),20)),10.0))",
+        "Add(2.0,Mul(TsCov($open,$volume,20),30.0))",
+        "Div(Pow($volume,5.0),Greater(Div(Pow($vwap,5.0),Greater(Mul(Abs($high),-1.0),1.0)),5.0))",
+        "Mul(Greater(2.0,TsSum($close,30)),$volume)",
+        "Mul(Sub(30.0,$low),Less($high,Greater(-5.0,$open)))",
+        "TsVar(Mul(5.0,SLog1p($volume)),10)",
+        "Div(Greater(Div(-0.5,$vwap),30.0),TsPctChange($volume,10))",
+        "Div(Sign(TsRank($volume,40)),Pow(5.0,$volume))",
+        "Add(TsWMA(Pow(Sign($low),-1.0),40),-10.0)",
+        "Pow($open,Div(10.0,Sub(TsCov(Div($open,-0.5),$volume,50),Less(Greater(-10.0,$close),$vwap))))",
+        "Pow(TsMax(Div(30.0,TsStd(Greater($high,$volume),40)),10),-10.0)",
+        "Pow(2.0,Greater(Inv(Inv(Pow(TsMax(Mul($vwap,-5.0),40),$volume))),Ref(Add(-5.0,$high),40)))",
+        "Pow(Mul(Sub(-2.0,Greater($low,Div(0.01,Rank(Add($high,-0.5))))),2.0),30.0)",
+        "TsKurt(Add(TsRank($low,10),Log(TsPctChange(TsMaxDiff(SLog1p($vwap),20),10))),40)",
+        "TsSkew(Greater(Log(Add(Sub($high,-5.0),-30.0)),Pow(2.0,Rank(Greater(SLog1p(Sign(Add($vwap,-1.0))),$volume)))),40)",
+        "Div($high,Sub(Greater(SLog1p(Div($high,-0.5)),TsIr($volume,40)),2.0))",
+        "Div(Add(TsEMA($close,50),5.0),Sub($low,5.0))",
+        "TsSkew(TsCov(Mul(1.0,$vwap),Add(Inv($volume),-1.0),30),20)",
+        "Div(Pow($close,10.0),Div(Pow($volume,$low),-0.01))",
+        "TsMad(TsMad(Sign($open),10),50)",
+        "SLog1p(Mul(5.0,Mul(TsDelta(Ref($high,40),10),-1.0)))",
+        "Pow(Inv($vwap),Greater(Greater(Pow(-0.5,$vwap),Sub(Less(0.5,Abs(TsMaxDiff(TsStd($low,10),50))),$volume)),5.0))",
+        "Pow($volume,-5.0)",
+        "Log(Add(-30.0,SLog1p(Abs(Add(Mul($volume,2.0),5.0)))))"
+    ],
+    "weights": [
+        0.005840804427862167,
+        0.018890464678406715,
+        0.00046852524974383414,
+        0.009143834933638573,
+        0.00021912572265136987,
+        0.0030693223234266043,
+        0.0,
+        0.0007673092186450958,
+        0.007038413546979427,
+        0.002496728440746665,
+        0.011515432968735695,
+        0.013968342915177345,
+        0.0012121886247768998,
+        0.01906883716583252,
+        0.004514642059803009,
+        0.03066864423453808,
+        0.0010542111704126,
+        0.002911462914198637,
+        0.022176362574100494,
+        0.0,
+        0.016520056873559952,
+        0.0005346962716430426,
+        0.0,
+        0.0,
+        0.018384817987680435,
+        0.0008587901829741895,
+        0.0,
+        0.03203122690320015,
+        0.0,
+        0.013423346914350986,
+        0.0090875755995512,
+        0.021226786077022552,
+        7.2369716690445784e-06,
+        0.0,
+        0.0,
+        0.0015021654544398189,
+        0.0,
+        6.86178682371974e-05,
+        0.0,
+        0.0,
+        0.00743305217474699,
+        0.003712083213031292,
+        0.00427697179839015,
+        0.0004074210883118212,
+        0.002478349953889847,
+        0.012234502471983433,
+        0.00610628817230463,
+        0.0,
+        0.005844208877533674,
+        0.0
+    ],
+    "record_reward": [],
+    "qd_bucket_keys": [
+        [
+            "price",
+            "comparison",
+            "long"
+        ],
+        [
+            "price",
+            "other",
+            "none"
+        ],
+        [
+            "price",
+            "arithmetic",
+            "none"
+        ],
+        [
+            "volume",
+            "arithmetic",
+            "short"
+        ],
+        [
+            "volume",
+            "arithmetic",
+            "medium"
+        ],
+        [
+            "price",
+            "volatility",
+            "medium"
+        ],
+        [
+            "volume",
+            "trend",
+            "medium"
+        ],
+        [
+            "price",
+            "rank",
+            "long"
+        ],
+        [
+            "price",
+            "volatility",
+            "short"
+        ],
+        [
+            "price",
+            "arithmetic",
+            "short"
+        ],
+        [
+            "price",
+            "arithmetic",
+            "short"
+        ],
+        [
+            "price",
+            "comparison",
+            "none"
+        ],
+        [
+            "price",
+            "rank",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "rank",
+            "medium"
+        ],
+        [
+            "price",
+            "comparison",
+            "short"
+        ],
+        [
+            "price",
+            "rank",
+            "long"
+        ],
+        [
+            "price_volume",
+            "trend",
+            "short"
+        ],
+        [
+            "price_volume",
+            "comparison",
+            "none"
+        ],
+        [
+            "price",
+            "correlation",
+            "short"
+        ],
+        [
+            "price",
+            "arithmetic",
+            "medium"
+        ],
+        [
+            "volume",
+            "trend",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "arithmetic",
+            "none"
+        ],
+        [
+            "price",
+            "arithmetic",
+            "long"
+        ],
+        [
+            "price",
+            "rank",
+            "short"
+        ],
+        [
+            "price",
+            "rank",
+            "short"
+        ],
+        [
+            "price",
+            "volatility",
+            "short"
+        ],
+        [
+            "volume",
+            "arithmetic",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "correlation",
+            "short"
+        ],
+        [
+            "price_volume",
+            "comparison",
+            "none"
+        ],
+        [
+            "price_volume",
+            "trend",
+            "medium"
+        ],
+        [
+            "price",
+            "comparison",
+            "none"
+        ],
+        [
+            "volume",
+            "volatility",
+            "short"
+        ],
+        [
+            "price_volume",
+            "trend",
+            "short"
+        ],
+        [
+            "volume",
+            "rank",
+            "medium"
+        ],
+        [
+            "price",
+            "trend",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "correlation",
+            "long"
+        ],
+        [
+            "price_volume",
+            "volatility",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "comparison",
+            "medium"
+        ],
+        [
+            "price",
+            "rank",
+            "none"
+        ],
+        [
+            "price",
+            "rank",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "rank",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "comparison",
+            "medium"
+        ],
+        [
+            "price",
+            "trend",
+            "long"
+        ],
+        [
+            "price_volume",
+            "correlation",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "arithmetic",
+            "none"
+        ],
+        [
+            "price",
+            "volatility",
+            "long"
+        ],
+        [
+            "price",
+            "trend",
+            "medium"
+        ],
+        [
+            "price_volume",
+            "volatility",
+            "long"
+        ],
+        [
+            "volume",
+            "arithmetic",
+            "none"
+        ],
+        [
+            "volume",
+            "arithmetic",
+            "none"
+        ]
+    ],
+    "qd_bucket_counts": {
+        "('price', 'comparison', 'long')": 1,
+        "('price', 'other', 'none')": 1,
+        "('price', 'arithmetic', 'none')": 1,
+        "('volume', 'arithmetic', 'medium')": 2,
+        "('price', 'volatility', 'medium')": 1,
+        "('volume', 'trend', 'medium')": 2,
+        "('price', 'rank', 'long')": 2,
+        "('price', 'volatility', 'short')": 2,
+        "('price', 'arithmetic', 'short')": 2,
+        "('price', 'comparison', 'none')": 2,
+        "('price', 'rank', 'medium')": 2,
+        "('price_volume', 'rank', 'medium')": 2,
+        "('price', 'comparison', 'short')": 1,
+        "('price_volume', 'trend', 'short')": 2,
+        "('price_volume', 'comparison', 'none')": 2,
+        "('price', 'correlation', 'short')": 1,
+        "('price', 'arithmetic', 'medium')": 1,
+        "('price_volume', 'arithmetic', 'none')": 2,
+        "('price', 'arithmetic', 'long')": 1,
+        "('price', 'rank', 'short')": 2,
+        "('price_volume', 'correlation', 'short')": 1,
+        "('price_volume', 'trend', 'medium')": 1,
+        "('volume', 'volatility', 'short')": 1,
+        "('volume', 'rank', 'medium')": 1,
+        "('price', 'trend', 'medium')": 2,
+        "('price_volume', 'correlation', 'long')": 1,
+        "('price_volume', 'volatility', 'medium')": 1,
+        "('price_volume', 'comparison', 'medium')": 2,
+        "('price', 'rank', 'none')": 1,
+        "('price', 'trend', 'long')": 1,
+        "('price_volume', 'correlation', 'medium')": 1,
+        "('price', 'volatility', 'long')": 1,
+        "('price_volume', 'volatility', 'long')": 1,
+        "('volume', 'arithmetic', 'none')": 2,
+        "('volume', 'arithmetic', 'short')": 1
+    }
+}
